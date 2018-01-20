@@ -24,7 +24,7 @@ class User(object):
             return cls(**data)
 
     @staticmethod
-    def _login_valid(email, password):
+    def login_valid(email, password):
         user = User.get_by_email(email)
         if user is not None:
             return user.password == password
@@ -50,7 +50,7 @@ class User(object):
         session['email'] = None
 
     def get_blogs(self):
-        return Blog.find_by_author(self._id)
+        return Blog.find_by_author_id(self._id)
 
     def new_blog(self, title, description):
         blog = Blog(author=self.email,
@@ -59,12 +59,12 @@ class User(object):
                     author_id=self._id)
         blog.save_to_mongo()
 
-    def new_post(self, blog_id, title, content, date=datetime.datetime.utcnow()):
+    @staticmethod
+    def new_post(blog_id, title, content, date=datetime.datetime.utcnow()):
         blog = Blog.from_mongo(blog_id)
         blog.new_post(title=title,
                       content=content,
                       date=date)
-
 
     def json(self):
         return {
@@ -75,3 +75,7 @@ class User(object):
 
     def save_to_mongo(self):
         Database.insert("users", self.json())
+
+    def get_id(self):
+        return self._id
+

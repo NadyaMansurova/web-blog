@@ -12,14 +12,7 @@ class Blog(object):
         self.description = description
         self._id = uuid.uuid4().hex if _id is None else _id
 
-    def new_post(self):
-        title = input("Enter post title: ")
-        content = input("Enter post content: ")
-        date = input("Enter post date or leave blank for today (in format DDMMYYYY): ")
-        if date == "":
-            date = datetime.datetime.utcnow()
-        else:
-            date = datetime.datetime.strptime(date, "%d%m%Y")
+    def new_post(self, title, content, date=datetime.datetime.utcnow()):
         post = Post(blog_id=self._id,
                     title=title,
                     content=content,
@@ -40,16 +33,24 @@ class Blog(object):
             'author_id': self.author_id,
             'title': self.title,
             'description': self.description,
-            'id': self._id
+            '_id': self._id
         }
 
     @classmethod
     def from_mongo(cls, id):
         blog_data = Database.find_one(collection='blogs',
-                                      query={'id': id})
+                                      query={'_id': id})
         return cls(**blog_data)
 
     @classmethod
-    def find_by_author(cls, author_id):
-        blogs = Database.find(collection='blogs', query={'author_id': author_id})
-        return [cls(**blog) for blog in blogs]
+    def find_by_author_id(cls, author_id=None):
+        if author_id is not None:
+            blogs = Database.find(collection='blogs',
+                              query={'author_id': author_id})
+        else:
+            blogs = []
+
+        if blogs:
+            return [cls(**blog) for blog in blogs]
+        else:
+            return []

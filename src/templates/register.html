@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container login-page-form">
-    <form id="register-form" action="{{ url_for('login_user') }}" method="post">
+    <form id="register-form" action="{{ url_for('register_user') }}" method="post">
         <div class="form-group">
             <label for="email">E-mail</label>
             <input type="text" id="email" name="email" class="form-control">
@@ -13,7 +13,8 @@
         </div>
 
 
-        <button type="submit" id="submit-button" class="btn btn-success">Login</button>
+        <button type="submit" id="submit-button" class="btn btn-success">Sign up</button>
+
     </form>
 </div>
 {% endblock %}
